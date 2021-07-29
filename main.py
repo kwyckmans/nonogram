@@ -97,8 +97,8 @@ def find_last_idx_not_equal_to(
     # Might not need limit, I will be calling is_fixable with a shorter and shorter sting.
     # The length of the string should match what I pass in in limit.
     index = 0
-    for i, s in enumerate(s):
-        if s != state and s != State.Unknown:
+    for i, symbol in enumerate(s):
+        if symbol != state and symbol != State.Unknown:
             index = i
 
     return index
@@ -119,7 +119,8 @@ def is_fixable(s: str, d: List[int]) -> bool:
     """
     i = len(s)  # position in string
     j = len(d)
-    print(f"length of s: {i}, length of d: {j}")
+    print(f"- - - - - - - - - - - - - - - - - - - - - ")
+    print(f"length of s {s}: {i}, length of d {d}: {j}")
 
     # An example of a description d:
     # 0^* 1^a1 0^+ 1^a2 0^+ ... 1^ar 0^*
@@ -175,7 +176,7 @@ def is_fixable(s: str, d: List[int]) -> bool:
     print(f"Last index not equal to {sigma_j[k]} or State.Unknown is {L_j}")
 
     if i > 0 and j == 0:
-        print(f"We'er out of clues, but we still have string left.")
+        print(f"We're out of clues, but we still have string left.")
         return False
 
     if i == 0:
@@ -192,12 +193,20 @@ def is_fixable(s: str, d: List[int]) -> bool:
 
     end = min(e_1, e_2)
     print(end)
+    result = False
+    print(f"Computing from {start} to {end + 1}")
+    for i in range(start - 1, end + 1):
+        print(f"Calling recursion {i} with {s[i:]}, {d[:-1]}")
+        fixable = is_fixable(s[i:], d[:-1])
+        result = result or fixable
+        if result :
+            print(f"!!!! Potential part of solution {i+1}, {s}, {d} !!!!")
 
-    for i in range(start, end + 1):
-        print(f"Should call the recursion with {i}")
+
+        
         # Here I need to call the recursion
 
-    return False
+    return result
 
     # if i == 0 and k != 0:
     #     # If there are still descriptors, we still need black pixels
