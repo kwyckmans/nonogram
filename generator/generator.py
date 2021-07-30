@@ -1,4 +1,5 @@
 from enum import Enum
+from nonogram.nonogram import Nonogram
 from typing import Dict, List
 
 import collections
@@ -12,53 +13,60 @@ class CellValue(Enum):
     BLACK = 1
 
 class NonogramGenerator:
+    """Generates nonograms based on a dict of pixeldata.
+
+    Accepts a dict representing a black and white image. For example:
+        {
+            0: [CellValue.BLACK, CellValue.WHITE]
+            1: [CellValue.WHITE, CellValue.BLACK]
+        }
+    represents a 2x2 checkerboard pattern.
+    """
     def __init__(self, pixel_data: Dict[int, List[CellValue]]) -> None:
+        self._pixel_data = pixel_data
         self._clues = []
 
-        # TODO: I don't want this class to be connected to pillow at all.
-        #   I want it to accept just a 2D list of {0, 255} values.
-        #   Something like:
-        #      [
-        #        [0,   0,   0]
-        #        [255, 255, 0]    
-        #      ]
-        #   This would allow me to easily test this class and to replace pillow 
-        #   if I ever wanted to
-        # I did this, but capture it in a comment
-        self._pixel_data = pixel_data
-
     def _generate_hints(self, row: List[CellValue]):
-        print(f"generating hints for {row}")
         clues = []
         
         next_idx = 0
         while next_idx < len(row):
             try:
                 next_black_index = row[next_idx:].index(CellValue.BLACK) + next_idx
-                print(f"next black index: {next_black_index}")
+                
                 try:
                     next_white_index = row[next_black_index:].index(CellValue.WHITE)
-                    print(f"next white index: {next_white_index}")
                     clues.append(next_white_index)
                     next_idx = next_black_index + next_white_index
-                    print(f"next index: {next_idx}")
+                
                 except ValueError:
                     remaining_length = len(row[next_black_index:])
                     clues.append(remaining_length)
-                    next_idx = remaining_length
+                
+                    break
             except ValueError:
                 next_idx = len(row)
 
-        print(f"generated clues: {clues}")
+        return tuple(clues)
 
-    def generate(self):
+    def generate(self) -> Nonogram:
         cols = collections.defaultdict(list)
         for y in range(0, len(self._pixel_data)):
             for x in range(0, len(self._pixel_data[y])):
                 cols[x].append(self._pixel_data[y][x])
-                            
-        self._generate_hints([CellValue.WHITE,CellValue.WHITE,CellValue.BLACK,CellValue.WHITE])
 
+        row_clues = [self._generate_hints(row) for row in self._pixel_data.values()]
+        col_clues = [self._generate_hints(col) for col in cols.values()]
+
+        nonogram = Nonogram(
+            row_clues = row_clues,
+            col_clues = col_clues
+        )
+
+        print(nonogram)
+
+        return nonogram
+        
 def get_aspect_ratio(im: Image.Image) -> float:
     width, height = im.size
     return width / height
@@ -68,20 +76,21 @@ def resize_to_nonogram_size(im: Image.Image) -> Image.Image:
     rescaled_nonogram_height = round((height / width) * NONOGRAM_HEIGHT)
     return im.resize((NONOGRAM_WIDTH, rescaled_nonogram_height))
 
-with Image.open("turing.jpeg") as im:
-    resized_im = resize_to_nonogram_size(im)
-    black_white_im = resized_im.convert(mode='1')
-    black_white_im.show()
-    width, height = black_white_im.size
-    print(width, height)
-    pixel_data = black_white_im.load()
+if __name__=="__main__":
+    with Image.open("turing.jpeg") as im:
+        resized_im = resize_to_nonogram_size(im)
+        black_white_im = resized_im.convert(mode='1')
+        # black_white_im.show()
+        width, height = black_white_im.size
+        print(width, height)
+        pixel_data = black_white_im.load()
 
-    rows = collections.defaultdict(list)
+        rows = collections.defaultdict(list)
 
-    for y in range(0, height - 1):
-        for x in range(0 , width - 1):
-            rows[y].append(CellValue.BLACK if pixel_data[x, y] == 0 else CellValue.WHITE) #type: ignore
+        for y in range(0, height - 1):
+            for x in range(0 , width - 1):
+                rows[y].append(CellValue.BLACK if pixel_data[x, y] == 0 else CellValue.WHITE) #type: ignore
 
-    generator = NonogramGenerator(rows)
-    generator.generate()
+        generator = NonogramGenerator(rows)
+        generator.generate()
 
