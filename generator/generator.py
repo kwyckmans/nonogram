@@ -49,12 +49,16 @@ class NonogramGenerator:
 
     def generate(self) -> Nonogram:
         cols = collections.defaultdict(list)
-        for y in range(0, len(self._pixel_data)):
-            for x in range(0, len(self._pixel_data[y])):
+        for y, _ in enumerate(self._pixel_data):  # pylint: disable=invalid-name
+            for x, _ in enumerate(self._pixel_data[y]):  # pylint: disable=invalid-name
                 cols[x].append(self._pixel_data[y][x])
 
-        row_clues: List[Tuple[int]] = [self._generate_hints(row) for row in self._pixel_data.values()]  # type: ignore
-        col_clues: List[Tuple[int]] = [self._generate_hints(col) for col in cols.values()]  # type: ignore
+        row_clues: List[Tuple[int]] = [
+            self._generate_hints(row) for row in self._pixel_data.values()
+        ]  # type: ignore
+        col_clues: List[Tuple[int]] = [
+            self._generate_hints(col) for col in cols.values()
+        ]  # type: ignore
 
         nonogram = Nonogram(row_clues=row_clues, col_clues=col_clues)
 
