@@ -2,7 +2,7 @@ import collections
 
 from PIL import Image
 
-from generator.generator import CellValue, NonogramGenerator
+from generator.generator import CellValue, generate_nonogram
 
 NONOGRAM_WIDTH = 25
 NONOGRAM_HEIGHT = 25
@@ -36,5 +36,4 @@ if __name__ == "__main__":
                     else CellValue.WHITE
                 )
 
-        generator = NonogramGenerator(rows)
-        generator.generate()
+        nonogram = generate_nonogram(pixel_data=rows)

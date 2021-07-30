@@ -1,6 +1,6 @@
 import unittest
 
-from generator.generator import CellValue, NonogramGenerator
+from generator.generator import CellValue, generate_nonogram
 
 
 class GeneratorTest(unittest.TestCase):
@@ -11,8 +11,7 @@ class GeneratorTest(unittest.TestCase):
 
     def test_generator_for_full_black_row(self):
         pixel_data = {0: [CellValue.BLACK, CellValue.BLACK]}
-        generator = NonogramGenerator(pixel_data=pixel_data)
-        nonogram = generator.generate()
+        nonogram = generate_nonogram(pixel_data=pixel_data)
         self.assertIsNotNone(nonogram)
 
         self.assertEqual(nonogram.row_clues, [(2,)])
@@ -20,24 +19,21 @@ class GeneratorTest(unittest.TestCase):
 
     def test_generator_for_full_white_row(self):
         pixel_data = {0: [CellValue.WHITE, CellValue.WHITE]}
-        generator = NonogramGenerator(pixel_data=pixel_data)
-        nonogram = generator.generate()
+        nonogram = generate_nonogram(pixel_data=pixel_data)
         self.assertIsNotNone(nonogram)
         self.assertEqual(nonogram.row_clues, [()])
         self.assertEqual(nonogram.col_clues, [(), ()])
 
     def test_generator_for_black_in_back_sequence(self):
         pixel_data = {0: [CellValue.WHITE, CellValue.BLACK]}
-        generator = NonogramGenerator(pixel_data=pixel_data)
-        nonogram = generator.generate()
+        nonogram = generate_nonogram(pixel_data=pixel_data)
         self.assertIsNotNone(nonogram)
         self.assertEqual(nonogram.row_clues, [(1,)])
         self.assertEqual(nonogram.col_clues, [(), (1,)])
 
     def test_generator_for_black_in_front_sequence(self):
         pixel_data = {0: [CellValue.BLACK, CellValue.WHITE]}
-        generator = NonogramGenerator(pixel_data=pixel_data)
-        nonogram = generator.generate()
+        nonogram = generate_nonogram(pixel_data=pixel_data)
         self.assertIsNotNone(nonogram)
         self.assertEqual(nonogram.row_clues, [(1,)])
         self.assertEqual(nonogram.col_clues, [(1,), ()])
