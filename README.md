@@ -1,6 +1,10 @@
 # Commandline nonograms
 
-## Running the program
+## Set-up
+
+```python
+pip install -r requirements.txt
+```
 
 ## References
 
