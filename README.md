@@ -1,17 +1,23 @@
 # Commandline nonograms
 
+A command line utility to generate, create and solve [nonograms](https://en.wikipedia.org/wiki/Nonogram), written in python.
+
 ## Set-up
 
 ```python
 pip install -r requirements.txt
 ```
 
+## Examples
+
+Will be added once functionality is implemented.
+
 ## References
 
 I initially found the following two papers along with an implementation. Since they seemed to produce nice results I initially started by implementing these. Unfortunately they are pretty sparse on implementation details and the translation to code was, unfortunately, quite hard.
 
 - [Solving nonograms by combining relaxations - K.J. Batenburg](https://homepages.cwi.nl/~kbatenbu/papers/bako_pr_2009.pdf)
-- [Constructing simple nonograms of varying difficulty](https://liacs.leidenuniv.nl/~kosterswa/constru.pdf)
+- [Constructing simple nonograms of varying difficulty - K.J. Batenburg](https://liacs.leidenuniv.nl/~kosterswa/constru.pdf)
 - [Open source implementation of the above two papers in C++](https://github.com/attilaszia/nonogram/tree/dca0836629295371b9931d50db48e71771946d13)
 
 Some cursory searching on the internet leads to solving these using DFS, optimise by starting with the most constrained row.
